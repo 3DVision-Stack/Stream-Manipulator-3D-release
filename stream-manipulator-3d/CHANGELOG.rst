@@ -2,6 +2,12 @@
 Changelog for package stream_manipulator_3d
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.4 (2016-07-23)
+------------------
+* Fix build errors
+  Add proper catkin dependencies
+* Contributors: Federico Spinelli
+
 0.1.2 (22-07-2016)
 ------------------
   * Fix VoxelGrid, now works properly:
