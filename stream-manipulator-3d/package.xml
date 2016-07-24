@@ -39,7 +39,7 @@
 -->
 <package format="2">
   <name>stream_manipulator_3d</name>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
   <description>
       Stream Manipulator 3D let's you subscribe to a stream of point
       clouds, such as those coming from sensors, and manipulate it 
@@ -61,12 +61,15 @@
 
   <depend>geometry_msgs</depend>
   <depend>pluginlib</depend>
-  <depend>pcl_conversions</depend>
   <depend>sensor_msgs</depend>
   <depend>roscpp</depend>
+  <depend>rosconsole</depend>
+  <depend>pcl_ros</depend>
+  <depend>pcl_conversions</depend>
   <depend>roslib</depend>
   <depend>visualization_msgs</depend>
   <depend>cmake_modules</depend>
+  <depend>tf</depend>
 
   <exec_depend>message_runtime</exec_depend>
 
