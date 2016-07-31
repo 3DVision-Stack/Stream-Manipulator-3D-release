@@ -1,0 +1,13 @@
+Source: ros-jade-stream-manipulator-3d
+Section: misc
+Priority: extra
+Maintainer: Tabjones <fspinelli@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jade-catkin, ros-jade-cmake-modules, ros-jade-geometry-msgs, ros-jade-pcl-conversions, ros-jade-pcl-ros, ros-jade-pluginlib, ros-jade-rosconsole, ros-jade-roscpp, ros-jade-roslib, ros-jade-sensor-msgs, ros-jade-tf, ros-jade-visualization-msgs
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jade-stream-manipulator-3d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jade-cmake-modules, ros-jade-geometry-msgs, ros-jade-message-runtime, ros-jade-pcl-conversions, ros-jade-pcl-ros, ros-jade-pluginlib, ros-jade-rosconsole, ros-jade-roscpp, ros-jade-roslib, ros-jade-sensor-msgs, ros-jade-tf, ros-jade-visualization-msgs
+Description: Stream Manipulator 3D let's you subscribe to a stream of point clouds, such as those coming from sensors, and manipulate it online, republishing the modified streams.
+ Input stream can be modified by applying various filters, in the order you choose.
