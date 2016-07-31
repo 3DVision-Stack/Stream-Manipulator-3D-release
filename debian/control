@@ -1,0 +1,12 @@
+Source: ros-jade-rqt-stream-manipulator-3d
+Section: misc
+Priority: extra
+Maintainer: tabjones <fspinelli@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-jade-catkin, ros-jade-cmake-modules, ros-jade-pluginlib, ros-jade-roscpp, ros-jade-roslib, ros-jade-rqt-gui, ros-jade-rqt-gui-cpp, ros-jade-stream-manipulator-3d
+Homepage: 
+Standards-Version: 3.9.2
+
+Package: ros-jade-rqt-stream-manipulator-3d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-jade-cmake-modules, ros-jade-pluginlib, ros-jade-roscpp, ros-jade-roslib, ros-jade-rqt-gui, ros-jade-rqt-gui-cpp, ros-jade-stream-manipulator-3d
+Description: The rqt_stream_manipulator_3d provides a GUI to the stream_manipulator_3d package, in order to dynamically reconfigure it.
