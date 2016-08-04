@@ -28,26 +28,26 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#ifndef _FILTERS_MEDIAN_HPP_
-#define _FILTERS_MEDIAN_HPP_
+#ifndef _FILTERS_STATISTICAL_OUTLIER_HPP_
+#define _FILTERS_STATISTICAL_OUTLIER_HPP_
 
 #include <stream_manipulator_3d/plugin.hpp>
-#include <stream_manipulator_3d/filters/config/median_config.hpp>
-#include <pcl/filters/median_filter.h>
+#include <stream_manipulator_3d/filters/config/statistical_outlier_config.hpp>
+#include <pcl/filters/statistical_outlier_removal.h>
 
 namespace sm3d
 {
 namespace filters
 {
-///MedianFilter, wrapping pcl one.
-class Median : public sm3d::Plugin
+///StatisticalOutlier Filter, wrapping pcl one.
+class StatisticalOutlier : public sm3d::Plugin
 {
     public:
-        virtual ~Median()
+        virtual ~StatisticalOutlier()
         {
             clean();
         }
-        Median() : Plugin()
+        StatisticalOutlier() : Plugin()
         {
         }
         ///initialize function
@@ -57,7 +57,7 @@ class Median : public sm3d::Plugin
             setNodeHandle(name, father_nh, priv_nh);
             //Then do our specific configuration
             //Create config in shared_memory
-            config = shm.segment.construct<MedianConfig>((name_+"Config").c_str())();
+            config = shm.segment.construct<StatisticalOutlierConfig>((name_+"Config").c_str())();
             reconfigFromRosParams();
             ROS_INFO("[%s::%s] Initialization complete",name_.c_str(),__func__);
         }
@@ -65,33 +65,44 @@ class Median : public sm3d::Plugin
         {
             //Lock the mutex to create parameters in shared memory (and in Rosparams)
             ShmHandler::Lock  lock(config->mtx);
+
             //Disabled flag, tells if the filter should be applied or not
             //Starts as disabled
             if (nh_->hasParam("disabled"))
                 nh_->getParam("disabled", config->disabled);
             else
                 nh_->setParam("disabled", config->disabled);
-            //Maximum distance a point is allowed to move along z axis.
-            if (nh_->hasParam("max_allowed_movement"))
-                nh_->getParam("max_allowed_movement", config->max_move);
+            //Organized flag
+            if (nh_->hasParam("organized"))
+                nh_->getParam("organized", config->organized);
             else
-                nh_->setParam("max_allowed_movement", config->max_move);
-            //Filter window size
-            if (nh_->hasParam("window_size"))
-                nh_->getParam("window_size",config->w_size);
+                nh_->setParam("organized", config->organized);
+            //Negative flag
+            if (nh_->hasParam("negative"))
+                nh_->getParam("negative",config->negative);
             else
-                nh_->setParam("window_size",config->w_size);
+                nh_->setParam("negative",config->negative);
+            //Standard deviation multiplier
+            if (nh_->hasParam("stddev_multiplier"))
+                nh_->getParam("stddev_multiplier",config->stddev_mult);
+            else
+                nh_->setParam("stddev_multiplier",config->stddev_mult);
+            //Number of neighbors to compute a mean distribution
+            if (nh_->hasParam("nr_k_neighbors"))
+                nh_->getParam("nr_k_neighbors",config->nr_k);
+            else
+                nh_->setParam("nr_k_neighbors",config->nr_k);
         }
         virtual void saveConfigToRosParams()
         {
             //Lock the mutex to create parameters in shared memory (and in Rosparams)
             ShmHandler::Lock  lock(config->mtx);
             nh_->setParam("disabled", config->disabled);
-            nh_->setParam("max_allowed_movement", config->max_move);
-            nh_->setParam("window_size",config->w_size);
-
+            nh_->setParam("organized", config->organized);
+            nh_->setParam("negative",config->negative);
+            nh_->setParam("stddev_multiplier",config->stddev_mult);
+            nh_->setParam("nr_k_neighbors",config->nr_k);
         }
-
         /// apply() implementation
         virtual void apply(PTC_Ptr input, PTC_Ptr &output)
         {
@@ -110,25 +121,29 @@ class Median : public sm3d::Plugin
                 output = input;
                 return;
             }
-            //Pcl Median obj
-            ::pcl::MedianFilter<PT> mf;
-            mf.setWindowSize(config->w_size);
-            mf.setMaxAllowedMovement(config->max_move);
-            mf.setInputCloud(input);
-            mf.filter(*output);
+            //Pcl StatisticalOutlier obj
+            ::pcl::StatisticalOutlierRemoval<PT> sor;
+            sor.setMeanK(config->nr_k);
+            sor.setStddevMulThresh(config->stddev_mult);
+            sor.setKeepOrganized(config->organized);
+            sor.setNegative(config->negative);
+            sor.setInputCloud(input);
+            sor.filter(*output);
             output->header.frame_id = input->header.frame_id;
         }
     protected:
     ///////Members
     //  Configuration in shared memory
-        MedianConfig *config;
+        StatisticalOutlierConfig *config;
         //clean Rosparams and shared_memory
         void clean()
         {
             nh_->deleteParam("disabled");
-            nh_->deleteParam("max_allowed_movement");
-            nh_->deleteParam("window_size");
-            shm.segment.destroy<MedianConfig>((name_+"Config").c_str());
+            nh_->deleteParam("negative");
+            nh_->deleteParam("organized");
+            nh_->deleteParam("stddev_multiplier");
+            nh_->deleteParam("nr_k_neighbors");
+            shm.segment.destroy<StatisticalOutlierConfig>((name_+"Config").c_str());
             ROS_INFO("[%s::%s] CleanUp complete",name_.c_str(),__func__);
         }
 };
