@@ -28,52 +28,39 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#ifndef _RQT_FILTERS_CROPBOX_HPP_
-#define _RQT_FILTERS_CROPBOX_HPP_
+#ifndef _RQT_FILTERS_STATISTICAL_OUTLIER_HPP_
+#define _RQT_FILTERS_STATISTICAL_OUTLIER_HPP_
 
-#include <stream_manipulator_3d/filters/config/cropbox_config.hpp>
+#include <stream_manipulator_3d/filters/config/statistical_outlier_config.hpp>
 #include <rqt_stream_manipulator_3d/plugin.h>
-#include <ui_cropbox.h>
+#include <ui_statistical_outlier.h>
 
 namespace rqt_sm3d
 {
 namespace filters
 {
-///CropBox Filter GUI
-class CropBox : public rqt_sm3d::Plugin
+///StatisticalOutlier Filter GUI
+class StatisticalOutlier : public rqt_sm3d::Plugin
 {
     Q_OBJECT
 
     public:
-        virtual ~CropBox(){}
-        CropBox() : Plugin() {}
+        virtual ~StatisticalOutlier(){}
+        StatisticalOutlier() : Plugin() {}
         virtual void init(const std::string &name);
     protected slots:
         virtual void onEnableDisable(bool checked);
-        virtual void onXminChanged(double val);
-        virtual void onYminChanged(double val);
-        virtual void onZminChanged(double val);
-        virtual void onXmaxChanged(double val);
-        virtual void onYmaxChanged(double val);
-        virtual void onZmaxChanged(double val);
-        virtual void onQWChanged(double val);
-        virtual void onQXChanged(double val);
-        virtual void onQYChanged(double val);
-        virtual void onQZChanged(double val);
-        virtual void onTXChanged(double val);
-        virtual void onTYChanged(double val);
-        virtual void onTZChanged(double val);
+        virtual void onStddevChanged(double val);
+        virtual void onKChanged(int val);
         virtual void onNegative(bool checked);
-        virtual void onPubMarks(bool checked);
-        virtual void onOrganized(bool checked);
-        virtual void onColorSelect();
+        virtual void onKeepOrganized(bool checked);
     protected:
     ///////Members
     //  Configuration in shared memory
-        typedef sm3d::filters::CropBoxConfig Config;
+        typedef sm3d::filters::StatisticalOutlierConfig Config;
         Config *config;
         //ui object from file
-        Ui::CropBoxWidget ui_;
+        Ui::StatisticalOutlierWidget ui_;
 };
 }//ns
 }//ns filters
